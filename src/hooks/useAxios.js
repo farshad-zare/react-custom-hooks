@@ -1,7 +1,20 @@
+// how to use:
+// import useAxios from "./hooks/useAxios";
+// const [url, setUrl] = useState(
+//   "https://jsonplaceholder.typicode.com/todos/1"
+// );
+//
+// const fetchParams = useMemo(() => {
+//   return {
+//     url,
+//     method: "get",
+//   };
+// }, [url]);
+// const { data, isLoading, error } = useAxios(fetchParams);
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function useAxios(dataUrl) {
+function useAxios(params) {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsloading] = useState(false);
@@ -10,12 +23,11 @@ function useAxios(dataUrl) {
     let isMouted = true;
     const source = axios.CancelToken.source();
 
-    const fetchData = async (url) => {
+    const requestParams = Object.assign(params, { cancelToken: source.token });
+    const fetchData = async (config) => {
       setIsloading(true);
       try {
-        const response = await axios.get(url, {
-          cancelToken: source.token,
-        });
+        const response = await axios.request(config);
         if (isMouted) {
           setData(response.data);
           setError(null);
@@ -25,6 +37,10 @@ function useAxios(dataUrl) {
           setError(err.message);
           setData([]);
         }
+      } finally {
+        if (isMouted) {
+          setIsloading(false);
+        }
       }
     };
 
@@ -33,9 +49,10 @@ function useAxios(dataUrl) {
       source.cancel();
     }
 
-    fetchData(dataUrl);
+    fetchData(requestParams);
+
     return cleanUp;
-  }, [dataUrl]);
+  }, [params]);
 
   return { data, isLoading, error };
 }
