@@ -1,10 +1,11 @@
 import "./App.css";
-import AxiosComponent from "./components/AxiosComponent";
+// import AxiosComponent from "./components/AxiosComponent";
+import ToggleComponent from "./components/ToggleComponent";
 
 function App() {
   console.log("app rendered");
 
-  return <AxiosComponent />;
+  return <ToggleComponent />;
 }
 
 export default App;
