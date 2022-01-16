@@ -9,7 +9,7 @@ function useToggle(initVal) {
     } else if (typeof val === "boolean") {
       setBool(val);
     } else if (
-      (typeof val === "object") | (typeof val === "string") &&
+      (typeof val === "object" || typeof val === "string") &&
       val?.length === 0
     ) {
       setBool(false);
